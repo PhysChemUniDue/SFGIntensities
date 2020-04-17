@@ -219,6 +219,9 @@ for pol in (:ssp, :ppp, :sps, :pss), mode in (:ss, :as)
     [effective_susceptibility(setup, pol, :c2v, mode, θx, ψ, τ, ρ, M_c, M_b, ω) for θx in θ]
 end
 
+# test r values
+@test round(SFGIntensities.ρ2r(:c3v, 0.014, deg2rad(109.5)), digits=2) == 0.28
+@test round(SFGIntensities.ρ2r(:c3v, 0.053, deg2rad(109.5)), digits=3) == 0.026
 
 p = plot(θ_deg, χ_ssp, label="ssp")
 plot!(θ_deg, χ_sps * 100, label="sps × 100")

@@ -62,14 +62,17 @@ function l_zz(β, n1, n2, n′)
 end
 l_zz(s, ω::Symbol) = l_zz(s.β[ω], s.n1[ω], s.n2[ω], s.n′[ω])
 
-
+"""
+r is the single bond polarizability derivate ratio.
+τ is the bond angle
+"""
 function ρ2r(symmetry::Symbol, ρ, τ)
     if symmetry == :c2v
-        f(r) = @. 3 / (4 + 20 * ((1 + 2r)^2 / ((1 - r)^2 * (1 + 3cos(τ)^2)))) - ρ
+        f = r -> 3 / (4 + 20 * ((1 + 2r)^2 / ((1 - r)^2 * (1 + 3cos(τ)^2)))) - ρ
         return find_zero(f, (0, 1))
     elseif symmetry == :c3v
-        g(r) = @. 3 / (4 + 20 * ((1 + 2r / ((1 - r) * (1 - 3cos(τ)^2)))))^2 - ρ
-        return find_zero(g, (0, 1))
+        f = r -> 3 / (4 + 20 * ((1 + 2r) / ((1 - r) * (1 - 3cos(τ)^2) ))^2) - ρ
+        return find_zero(f, (0, 1))
     else
         error("Unknown symmetry $symmetry.")
     end
@@ -224,6 +227,23 @@ function effective_susceptibility(s::Setup, pol::Symbol, geo=:none)
     χ_eff
 end
 
+"""
+pol: polarization :ssp, :ppp
+symmetry: :c3v, :c2v
+mode: :ss (symmetric stretch), :as (antisymmetric stretch)
+θavg: average tilt angle of the moiety
+ψavg: average ratational angle of the moiety
+τ: bond angle
+ρ: Raman depolarization ratio
+M_c: Mass of the center atom
+M_b: Mass of the bonded atoms
+ω: wavenumber of the mode
+θ_dist: distribution of tilt angles - :δ, :fixed, :Normal
+σ_θ: standard deviation for :Normal distribution
+ψ_dist: distribution of rotational angles - :iso, :Normal
+σ_ψ: standard deviation for :Normal distribution
+n: number of angles to calculate
+"""
 function effective_susceptibility(s::Setup, pol::Symbol, symmetry::Symbol,
                                   mode::Symbol, θavg::Real, ψavg::Real, τ::Real, ρ::Real,
                                   M_c::Real, M_b::Real, ω::Real;

@@ -20,6 +20,7 @@ n2_ir = 6.2925 + 46.619im
 # Incident Angles
 β_vis = deg2rad(45)
 β_ir = range(deg2rad(-80), deg2rad(80), length=199)
+β_ir = deg2rad.([-45, 45])
 β_sf = sfangle.(λ_ir, λ_vis, β_ir, β_vis)
 
 s = SFGIntensities.Setup(
@@ -47,8 +48,8 @@ end
 χ_eff ./= maximum(real(χ_eff))
 I_sf ./= maximum(I_sf)
 
-I1 = I_sf[1:100]
-I2 = I_sf[100:end]
+# I1 = I_sf[1:100]
+# I2 = I_sf[100:end]
 
 ##--PLOT
 pygui(true)
